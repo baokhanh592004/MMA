@@ -1,0 +1,52 @@
+<%- include('../partials/header') %>
+
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-collection"></i> Quizzes</h2>
+    <a href="/quizzes/new" class="btn btn-primary">
+      <i class="bi bi-plus-circle"></i> Add Quiz
+    </a>
+  </div>
+
+  <% if (quizzes && quizzes.length > 0) { %>
+    <div class="row">
+      <% quizzes.forEach((quiz, index) => { %>
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+              <h5 class="card-title mb-0">
+                <i class="bi bi-journal-text"></i> <%= quiz.title %>
+              </h5>
+            </div>
+            <div class="card-body">
+              <p class="card-text"><%= quiz.description || 'No description' %></p>
+              <p class="text-muted">
+                <i class="bi bi-question-circle"></i> 
+                <%= quiz.question ? quiz.question.length : 0 %> questions
+              </p>
+            </div>
+            <div class="card-footer bg-transparent">
+              <a href="/quizzes/<%= quiz._id %>" class="btn btn-sm btn-info">
+                <i class="bi bi-eye"></i> View
+              </a>
+              <a href="/quizzes/<%= quiz._id %>/edit" class="btn btn-sm btn-warning">
+                <i class="bi bi-pencil"></i> Edit
+              </a>
+              <form action="/quizzes/<%= quiz._id %>?_method=DELETE" method="POST" style="display:inline;">
+                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure? This will delete the quiz and all associated questions!')">
+                  <i class="bi bi-trash"></i> Delete
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="alert alert-info">
+      <i class="bi bi-info-circle"></i> No quizzes found. <a href="/quizzes/new">Create one</a>
+    </div>
+  <% } %>
+</div>
+
+<%- include('../partials/footer') %>

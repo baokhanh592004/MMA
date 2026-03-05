@@ -1,0 +1,87 @@
+<%- include('../partials/header') %>
+
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h4 class="mb-0"><i class="bi bi-journal-text"></i> <%= quiz.title %></h4>
+      <div class="btn-group">
+        <button type="button" class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+          <i class="bi bi-plus-circle"></i> Add Question
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="/quizzes/<%= quiz._id %>/add-question">
+            <i class="bi bi-plus-circle"></i> Add Single Question
+          </a></li>
+          <li><a class="dropdown-item" href="/quizzes/<%= quiz._id %>/add-questions">
+            <i class="bi bi-plus-circle-fill"></i> Add Multiple Questions (JSON)
+          </a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="card-body">
+      <p class="lead"><%= quiz.description || 'No description' %></p>
+      
+      <hr>
+      
+      <h5><i class="bi bi-question-circle"></i> Questions (<%= quiz.question ? quiz.question.length : 0 %>)</h5>
+      
+      <% if (quiz.question && quiz.question.length > 0) { %>
+        <div class="list-group">
+          <% quiz.question.forEach((q, index) => { %>
+            <div class="list-group-item">
+              <div class="d-flex justify-content-between align-items-start">
+                <div class="flex-grow-1">
+                  <h6 class="mb-1"><%= index + 1 %>. <%= q.text %></h6>
+                  <% if (q.options && q.options.length > 0) { %>
+                    <ul class="mb-1">
+                      <% q.options.forEach((opt, optIndex) => { %>
+                        <li>
+                          <%= opt %>
+                          <% if (optIndex === q.correctAnswerIndex) { %>
+                            <span class="badge bg-success">✓ Correct</span>
+                          <% } %>
+                        </li>
+                      <% }) %>
+                    </ul>
+                  <% } %>
+                  <% if (q.keyword && q.keyword.length > 0) { %>
+                    <% q.keyword.forEach(k => { %>
+                      <span class="badge bg-info me-1"><%= k %></span>
+                    <% }) %>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="alert alert-warning">
+          <i class="bi bi-exclamation-triangle"></i> No questions in this quiz yet.
+          <a href="/quizzes/<%= quiz._id %>/add-question" class="alert-link">Add your first question</a>
+        </div>
+      <% } %>
+
+      <div class="mt-4">
+        <a href="/quizzes/<%= quiz._id %>/add-question" class="btn btn-success">
+          <i class="bi bi-plus-circle"></i> Add Question
+        </a>
+        <a href="/quizzes/<%= quiz._id %>/add-questions" class="btn btn-info">
+          <i class="bi bi-plus-circle-fill"></i> Add Multiple Questions
+        </a>
+        <a href="/quizzes/<%= quiz._id %>/edit" class="btn btn-warning">
+          <i class="bi bi-pencil"></i> Edit Quiz
+        </a>
+        <form action="/quizzes/<%= quiz._id %>?_method=DELETE" method="POST" style="display:inline;">
+          <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure? This will delete the quiz and all questions!')">
+            <i class="bi bi-trash"></i> Delete
+          </button>
+        </form>
+        <a href="/quizzes" class="btn btn-secondary">
+          <i class="bi bi-arrow-left"></i> Back
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

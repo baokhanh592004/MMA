@@ -1,0 +1,103 @@
+<%- include('../partials/header') %>
+
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+      <h4 class="mb-0"><i class="bi bi-plus-circle-fill"></i> Add Multiple Questions to: <%= quiz.title %></h4>
+      <button type="button" class="btn btn-light btn-sm" onclick="addQuestion()">
+        <i class="bi bi-plus"></i> Add Another Question
+      </button>
+    </div>
+    <div class="card-body">
+      <form action="/quizzes/<%= quiz._id %>/questions" method="POST" id="multipleQuestionsForm">
+        <div id="questionsContainer">
+          <!-- Questions will be added here dynamically -->
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+          <div>
+            <button type="button" class="btn btn-outline-success" onclick="addQuestion()">
+              <i class="bi bi-plus-circle"></i> Add Another Question
+            </button>
+            <span class="badge bg-info ms-2" id="questionCount">0 questions</span>
+          </div>
+          <div>
+            <button type="submit" class="btn btn-success">
+              <i class="bi bi-check-circle"></i> Add All Questions
+            </button>
+            <a href="/quizzes/<%= quiz._id %>" class="btn btn-secondary">
+              <i class="bi bi-x-circle"></i> Cancel
+            </a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+let questionCounter = 0;
+
+function addQuestion() {
+  questionCounter++;
+  const container = document.getElementById('questionsContainer');
+  
+  const questionDiv = document.createElement('div');
+  questionDiv.className = 'card mb-3 question-card';
+  questionDiv.id = `question-${questionCounter}`;
+  questionDiv.innerHTML = `
+    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+      <strong>Question ${questionCounter}</strong>
+      <button type="button" class="btn btn-sm btn-danger" onclick="removeQuestion(${questionCounter})">
+        <i class="bi bi-trash"></i> Remove
+      </button>
+    </div>
+    <div class="card-body">
+      <div class="mb-3">
+        <label class="form-label">Question Text</label>
+        <input type="text" name="questions[${questionCounter}][text]" class="form-control" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Options (comma separated)</label>
+        <input type="text" name="questions[${questionCounter}][options]" class="form-control" required placeholder="Paris, London, Berlin, Madrid">
+        <small class="text-muted">Separate each option with a comma</small>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Keywords (comma separated)</label>
+        <input type="text" name="questions[${questionCounter}][keyword]" class="form-control" required placeholder="keyword1, keyword2">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Correct Answer Index (0-based)</label>
+        <input type="number" name="questions[${questionCounter}][correctAnswerIndex]" class="form-control" min="0" value="0" required>
+        <small class="text-muted">0 = first option, 1 = second option, etc.</small>
+      </div>
+    </div>
+  `;
+  
+  container.appendChild(questionDiv);
+  updateQuestionCount();
+}
+
+function removeQuestion(id) {
+  const element = document.getElementById(`question-${id}`);
+  if (element) {
+    element.remove();
+    updateQuestionCount();
+  }
+}
+
+function updateQuestionCount() {
+  const count = document.querySelectorAll('.question-card').length;
+  document.getElementById('questionCount').textContent = `${count} question${count !== 1 ? 's' : ''}`;
+}
+
+// Add first question on load
+document.addEventListener('DOMContentLoaded', function() {
+  addQuestion();
+});
+</script>
+
+<%- include('../partials/footer') %>

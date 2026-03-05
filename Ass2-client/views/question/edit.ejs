@@ -1,0 +1,43 @@
+<%- include('../partials/header') %>
+
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header bg-warning">
+      <h4><i class="bi bi-pencil"></i> Edit Question</h4>
+    </div>
+    <div class="card-body">
+      <form action="/questions/<%= q._id %>?_method=PUT" method="POST">
+        <div class="mb-3">
+          <label class="form-label">Question Text</label>
+          <input type="text" name="text" value="<%= q.text %>" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Options (comma separated)</label>
+          <input type="text" name="options" value="<%= q.options.join(', ') %>" class="form-control" required>
+          <small class="text-muted">Separate each option with a comma</small>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Keywords (comma separated)</label>
+          <input type="text" name="keyword" value="<%= q.keyword.join(',') %>" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Correct Answer Index (0-based)</label>
+          <input type="number" name="correctAnswerIndex" value="<%= q.correctAnswerIndex %>" class="form-control" min="0" required>
+          <small class="text-muted">Index starts from 0 (first option = 0)</small>
+        </div>
+
+        <button type="submit" class="btn btn-success">
+          <i class="bi bi-check-circle"></i> Update
+        </button>
+        <a href="/questions" class="btn btn-secondary">
+          <i class="bi bi-x-circle"></i> Cancel
+        </a>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

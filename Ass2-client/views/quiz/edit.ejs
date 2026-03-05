@@ -1,0 +1,36 @@
+<%- include('../partials/header') %>
+
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header bg-warning">
+      <h4><i class="bi bi-pencil"></i> Edit Quiz</h4>
+    </div>
+    <div class="card-body">
+      <form action="/quizzes/<%= quiz._id %>?_method=PUT" method="POST">
+        <div class="mb-3">
+          <label class="form-label">Title</label>
+          <input type="text" name="title" value="<%= quiz.title %>" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Description</label>
+          <textarea name="description" class="form-control" rows="3"><%= quiz.description || '' %></textarea>
+        </div>
+
+        <div class="alert alert-info">
+          <i class="bi bi-info-circle"></i> To add questions to this quiz, go to 
+          <a href="/quizzes/<%= quiz._id %>">Quiz Detail</a> page and click "Add Question".
+        </div>
+
+        <button type="submit" class="btn btn-success">
+          <i class="bi bi-check-circle"></i> Update
+        </button>
+        <a href="/quizzes/<%= quiz._id %>" class="btn btn-secondary">
+          <i class="bi bi-x-circle"></i> Cancel
+        </a>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
