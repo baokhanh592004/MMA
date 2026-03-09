@@ -10,6 +10,7 @@ export default function AdminDashboard() {
   const [editId, setEditId] = useState<string | null>(null)
   const [editTitle, setEditTitle] = useState("")
   const [editDesc, setEditDesc] = useState("")
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string } | null>(null)
 
   useEffect(() => {
     dispatch(fetchQuizzes())
@@ -25,6 +26,12 @@ export default function AdminDashboard() {
     if (!editId) return
     await dispatch(updateQuiz({ id: editId, title: editTitle, description: editDesc }))
     setEditId(null)
+  }
+
+  const handleConfirmDelete = () => {
+    if (!deleteTarget) return
+    dispatch(deleteQuiz(deleteTarget.id))
+    setDeleteTarget(null)
   }
 
   return (
@@ -72,7 +79,7 @@ export default function AdminDashboard() {
                 </button>
                 <button
                   className="btn btn-danger btn-sm"
-                  onClick={() => dispatch(deleteQuiz(quiz._id))}
+                  onClick={() => setDeleteTarget({ id: quiz._id, title: quiz.title })}
                 >
                   Delete
                 </button>
@@ -84,6 +91,47 @@ export default function AdminDashboard() {
           )}
         </div>
       ))}
+
+      {/* Delete Confirmation Modal */}
+      {deleteTarget && (
+        <>
+          <div className="modal show d-block" tabIndex={-1}>
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Confirm Delete</h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    onClick={() => setDeleteTarget(null)}
+                  />
+                </div>
+                <div className="modal-body">
+                  <p>
+                    Bạn có chắc muốn xóa quiz{" "}
+                    <strong>"{deleteTarget.title}"</strong> không?
+                  </p>
+                  <p className="text-danger mb-0">
+                    <small>Hành động này không thể hoàn tác.</small>
+                  </p>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => setDeleteTarget(null)}
+                  >
+                    Hủy
+                  </button>
+                  <button className="btn btn-danger" onClick={handleConfirmDelete}>
+                    Xóa
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="modal-backdrop show" onClick={() => setDeleteTarget(null)} />
+        </>
+      )}
     </div>
   )
 }
